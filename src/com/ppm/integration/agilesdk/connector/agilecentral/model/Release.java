@@ -1,6 +1,8 @@
-package com.hp.ppm.integration.rally.model;
+package com.ppm.integration.agilesdk.connector.agilecentral.model;
 
 import java.util.Date;
+
+import com.ppm.integration.agilesdk.connector.agilecentral.model.Entity;
 
 import net.sf.json.JSONObject;
 

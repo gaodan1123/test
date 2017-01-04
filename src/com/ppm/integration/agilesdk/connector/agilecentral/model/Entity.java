@@ -1,4 +1,4 @@
-package com.hp.ppm.integration.rally.model;
+package com.ppm.integration.agilesdk.connector.agilecentral.model;
 
 import java.util.Date;
 import java.util.List;
@@ -17,9 +17,6 @@ public class Entity implements IExternalTask{
 	public Entity(JSONObject jsonObject) {
 		this.jsonObject = jsonObject;
 	}
-
-	//====================================================================================
-
 	protected boolean check(String key) {
 		return jsonObject != null && jsonObject.containsKey(key);
 	}
@@ -35,7 +32,6 @@ public class Entity implements IExternalTask{
 	public String getType(){
 		return check("_type") ? jsonObject.getString("_type") : null;
 	}
-	//====================================================================================
 
 	@Override
 	public String getId() {
@@ -49,25 +45,21 @@ public class Entity implements IExternalTask{
 
 	@Override
 	public Date getScheduleStart() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public Date getScheduleFinish() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public long getOwnerId() {
-		// TODO Auto-generated method stub
 		return -1;
 	}
 
 	@Override
 	public String getOwnerRole() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -78,13 +70,11 @@ public class Entity implements IExternalTask{
 
 	@Override
 	public TaskStatus getStatus() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public List<ITaskActual> getActuals() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 

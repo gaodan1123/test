@@ -1,4 +1,4 @@
-package com.hp.ppm.integration.rally;
+package com.ppm.integration.agilesdk.connector.agilecentral;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -10,11 +10,14 @@ import com.hp.ppm.integration.pm.IExternalTask;
 import com.hp.ppm.integration.pm.IExternalWorkPlan;
 import com.hp.ppm.integration.pm.WorkPlanIntegration;
 import com.hp.ppm.integration.pm.WorkPlanIntegrationContext;
-import com.hp.ppm.integration.rally.model.Iteration;
-import com.hp.ppm.integration.rally.model.Project;
-import com.hp.ppm.integration.rally.model.Release;
-import com.hp.ppm.integration.rally.model.Subscription;
-import com.hp.ppm.integration.rally.model.Workspace;
+import com.ppm.integration.agilesdk.connector.agilecentral.Config;
+import com.ppm.integration.agilesdk.connector.agilecentral.Constants;
+import com.ppm.integration.agilesdk.connector.agilecentral.RallyClient;
+import com.ppm.integration.agilesdk.connector.agilecentral.model.Iteration;
+import com.ppm.integration.agilesdk.connector.agilecentral.model.Project;
+import com.ppm.integration.agilesdk.connector.agilecentral.model.Release;
+import com.ppm.integration.agilesdk.connector.agilecentral.model.Subscription;
+import com.ppm.integration.agilesdk.connector.agilecentral.model.Workspace;
 import com.hp.ppm.integration.ui.DynamicalDropdown;
 import com.hp.ppm.integration.ui.Field;
 import com.hp.ppm.integration.ui.LineBreaker;
@@ -29,7 +32,7 @@ public class RallyWorkPlanIntegration implements WorkPlanIntegration {
 			new PlainText(Constants.KEY_USERNAME,"USERNAME","dan.gao3@hpe.com",true),
 			new PasswordText(Constants.KEY_PASSWORD,"PASSWORD","Hanyan@223",true),
 			new LineBreaker(),
-			new DynamicalDropdown(Constants.KEY_SUBSCRIPTION, "RALLY_SUBSCRIPTION", true){
+			new DynamicalDropdown(Constants.KEY_SUBSCRIPTION, "SUBSCRIPTION", true){
 
 				@Override
 				public List<String> getDependencies() {
@@ -47,7 +50,7 @@ public class RallyWorkPlanIntegration implements WorkPlanIntegration {
 					return Arrays.asList(new Option[]{ new Option(subscription.getId(),subscription.getName()) });
 				}
 			},
-			new DynamicalDropdown(Constants.KEY_WORKSPACE, "RALLY_WORKSPACE", true){
+			new DynamicalDropdown(Constants.KEY_WORKSPACE, "WORKSPACE", true){
 
 				@Override
 				public List<String> getDependencies() {
@@ -69,7 +72,7 @@ public class RallyWorkPlanIntegration implements WorkPlanIntegration {
 					return options;
 				}
 			},
-			new DynamicalDropdown(Constants.KEY_PROJECT, "RALLY_PROJECT", true){
+			new DynamicalDropdown(Constants.KEY_PROJECT, "PROJECT", true){
 
 				@Override
 				public List<String> getDependencies() {
@@ -91,8 +94,7 @@ public class RallyWorkPlanIntegration implements WorkPlanIntegration {
 					return options;
 				}
 			},
-			//add
-			new DynamicalDropdown(Constants.KEY_RELEASE, "RALLY_RELEASE", false){
+			new DynamicalDropdown(Constants.KEY_RELEASE, "RELEASE", false){
 				
 				@Override
 				public List<String> getDependencies(){
@@ -138,7 +140,6 @@ public class RallyWorkPlanIntegration implements WorkPlanIntegration {
 
 			@Override
 			public List<IExternalTask> getRootTasks() {
-				//change
 				List<Iteration> iterations = rallyClient.getIterationsByRelease(projectId, releaseId);	
 				List<IExternalTask> externalTasks = new ArrayList<IExternalTask>(iterations.size());
 				for (Iteration iteration : iterations) {

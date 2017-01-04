@@ -1,4 +1,4 @@
-package com.hp.ppm.integration.rally;
+package com.ppm.integration.agilesdk.connector.agilecentral;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -9,15 +9,18 @@ import net.sf.json.JSONObject;
 
 import com.hp.ppm.integration.provider.Providers;
 import com.hp.ppm.integration.provider.UserProvider;
-import com.hp.ppm.integration.rally.model.HierarchicalRequirement;
-import com.hp.ppm.integration.rally.model.Iteration;
-import com.hp.ppm.integration.rally.model.Project;
-import com.hp.ppm.integration.rally.model.Release;
-import com.hp.ppm.integration.rally.model.Revision;
-import com.hp.ppm.integration.rally.model.RevisionHistory;
-import com.hp.ppm.integration.rally.model.Subscription;
-import com.hp.ppm.integration.rally.model.User;
-import com.hp.ppm.integration.rally.model.Workspace;
+import com.ppm.integration.agilesdk.connector.agilecentral.Config;
+import com.ppm.integration.agilesdk.connector.agilecentral.RallyIntegrationConnector;
+import com.ppm.integration.agilesdk.connector.agilecentral.RestHelper;
+import com.ppm.integration.agilesdk.connector.agilecentral.model.HierarchicalRequirement;
+import com.ppm.integration.agilesdk.connector.agilecentral.model.Iteration;
+import com.ppm.integration.agilesdk.connector.agilecentral.model.Project;
+import com.ppm.integration.agilesdk.connector.agilecentral.model.Release;
+import com.ppm.integration.agilesdk.connector.agilecentral.model.Revision;
+import com.ppm.integration.agilesdk.connector.agilecentral.model.RevisionHistory;
+import com.ppm.integration.agilesdk.connector.agilecentral.model.Subscription;
+import com.ppm.integration.agilesdk.connector.agilecentral.model.User;
+import com.ppm.integration.agilesdk.connector.agilecentral.model.Workspace;
 
 public class RallyClient {
 
@@ -74,7 +77,7 @@ public class RallyClient {
 	}
 	
 
-	private List<HierarchicalRequirement> getHierarchicalRequirements() {
+	public List<HierarchicalRequirement> getHierarchicalRequirements() {
 		String hierarchicalrequirementURI = "/slm/webservice/v2.0/hierarchicalrequirement";
 		JSONArray jsonArray = helper.query(hierarchicalrequirementURI, "", true, "", 1, 20);
 		List<HierarchicalRequirement> hierarchicalRequirements = new ArrayList<HierarchicalRequirement>();
@@ -112,7 +115,6 @@ public class RallyClient {
 			}
 		}
 	}
-	//add
 	public List<Release> getReleases(String projectId) {
 		String releasesURI = "/slm/webservice/v2.0/project/?/Releases";
 		releasesURI = releasesURI.replace("?", projectId);
@@ -123,8 +125,6 @@ public class RallyClient {
 		}
 		return releases;
 	}
-
-	//add
 	public List<Iteration> getIterationsByRelease(String projectId, String releaseId) {
 		String iterationsURI = "/slm/webservice/v2.0/project/?/Iterations";
 		iterationsURI = iterationsURI.replace("?", projectId);
@@ -157,8 +157,7 @@ public class RallyClient {
 		fillUser(hierarchicalRequirements, users);
 		return iterations;
 	}
-	
-	//add
+
 	public RevisionHistory getRevisionHistory(String getRevisionHistoryRef) {
 		int len = getRevisionHistoryRef.split("/").length;
 		String revisionHistoryURI = "/slm/webservice/v2.0/revisionhistory/?";

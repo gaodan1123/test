@@ -1,10 +1,12 @@
-package com.hp.ppm.integration.rally;
+package com.ppm.integration.agilesdk.connector.agilecentral;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
 import org.apache.wink.client.Resource;
 import org.apache.wink.client.RestClient;
+
+import com.ppm.integration.agilesdk.connector.agilecentral.Config;
 
 public class RestHelper {
 

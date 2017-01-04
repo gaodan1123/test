@@ -1,4 +1,4 @@
-package com.hp.ppm.integration.rally;
+package com.ppm.integration.agilesdk.connector.agilecentral;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.wink.client.ClientConfig;
