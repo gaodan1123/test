@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>rally-impl</name>
+	<name>agilecentral-impl</name>
 	<comment></comment>
 	<projects>
 	</projects>
@@ -14,4 +14,4 @@
 	<natures>
 		<nature>org.eclipse.jdt.core.javanature</nature>
 	</natures>
-</projectDescription>
+</projectDescription
