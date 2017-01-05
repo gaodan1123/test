@@ -1,4 +1,4 @@
-package com.hp.ppm.integration.rally.model;
+package com.ppm.integration.agilesdk.connector.agilecentral.model;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -7,6 +7,8 @@ import java.util.List;
 import net.sf.json.JSONObject;
 
 import com.hp.ppm.integration.pm.IExternalTask;
+import com.ppm.integration.agilesdk.connector.agilecentral.model.Entity;
+import com.ppm.integration.agilesdk.connector.agilecentral.model.HierarchicalRequirement;
 
 public class Iteration extends Entity {
 
@@ -19,7 +21,6 @@ public class Iteration extends Entity {
 
 	public void addHierarchicalRequirement(HierarchicalRequirement hierarchicalRequirement) {	
 		if (hierarchicalRequirement.getIterationUUID() != null && this.getUUID().equals(hierarchicalRequirement.getIterationUUID())){
-			//if(hierarchicalRequirement.getTasksCount() != 0)
 			hierarchicalRequirement.setIteration(this);
 			this.hierarchicalRequirement.add(hierarchicalRequirement);
 			this.hierarchicalRequirements.add(hierarchicalRequirement);			
@@ -40,7 +41,6 @@ public class Iteration extends Entity {
 	public TaskStatus getStatus() {
 		String status = (check("State") ? jsonObject.getString("State") : null);
 		IExternalTask.TaskStatus result = IExternalTask.TaskStatus.UNKNOWN;
-		//Planning,Committed,Accepted
 		switch (status){
 		case "Planning":
 			result = IExternalTask.TaskStatus.IN_PLANNING;
@@ -59,8 +59,7 @@ public class Iteration extends Entity {
 	public List<IExternalTask> getChildren() {
 		return hierarchicalRequirements;		
 	}
-	
-	//add
+
 	public String getTaskRemainingTotal(){
 		return check("TaskRemainingTotal") ? jsonObject.getString("TaskRemainingTotal") : null;
 	}

@@ -1,4 +1,4 @@
-package com.hp.ppm.integration.rally.model;
+package com.ppm.integration.agilesdk.connector.agilecentral.model;
 
 public class TimesheetItem {
 

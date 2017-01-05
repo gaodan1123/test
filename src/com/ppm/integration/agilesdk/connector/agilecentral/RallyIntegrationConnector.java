@@ -1,4 +1,4 @@
-package com.hp.ppm.integration.rally;
+package com.ppm.integration.agilesdk.connector.agilecentral;
 
 import java.util.Arrays;
 import java.util.List;
@@ -6,6 +6,9 @@ import java.util.List;
 import com.hp.ppm.integration.FunctionIntegration;
 import com.hp.ppm.integration.IntegrationConnector;
 import com.hp.ppm.integration.IntegrationConnectorInstance;
+import com.ppm.integration.agilesdk.connector.agilecentral.Constants;
+import com.ppm.integration.agilesdk.connector.agilecentral.RallyTimeSheetIntegration;
+import com.ppm.integration.agilesdk.connector.agilecentral.RallyWorkPlanIntegration;
 import com.hp.ppm.integration.ui.Field;
 import com.hp.ppm.integration.ui.PlainText;
 

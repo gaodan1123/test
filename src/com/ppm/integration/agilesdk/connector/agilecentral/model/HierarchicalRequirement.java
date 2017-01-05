@@ -1,12 +1,18 @@
-package com.hp.ppm.integration.rally.model;
+package com.ppm.integration.agilesdk.connector.agilecentral.model;
 
 import java.util.Date;
  
+
+
+
 import net.sf.json.JSONObject;
 
 import com.hp.ppm.integration.pm.IExternalTask;
+import com.hp.ppm.integration.pm.IExternalTask.TaskStatus;
 import com.hp.ppm.integration.provider.UserProvider;
-
+import com.ppm.integration.agilesdk.connector.agilecentral.model.Entity;
+import com.ppm.integration.agilesdk.connector.agilecentral.model.Iteration;
+import com.ppm.integration.agilesdk.connector.agilecentral.model.User;
 public class HierarchicalRequirement extends Entity {
 
 	private Iteration iteration;
@@ -17,14 +23,7 @@ public class HierarchicalRequirement extends Entity {
 		super(jsonObject);
 		this.userProvider = userProvider;
 	}
-	//add
-	public int getTasksCount(){
-		JSONObject tasks = this.jsonObject.getJSONObject("Tasks");
-		if(!tasks.isNullObject()){
-			return tasks.getInt("Count");
-		}
-		return 0;
-	}
+
 	public String getIterationUUID() {
 		JSONObject iteration = this.jsonObject.getJSONObject("Iteration");
 		if (!iteration.isNullObject()) {
@@ -32,7 +31,15 @@ public class HierarchicalRequirement extends Entity {
 		}
 		return null;
 	}
-
+	
+	public String getProjectUUID() {
+		JSONObject project = this.jsonObject.getJSONObject("Project");
+		if (!project.isNullObject()) {
+			return project.getString("_refObjectUUID");
+		}
+		return null;
+	}
+	
 	public String getOwnerUUID() {
 		JSONObject iteration = this.jsonObject.getJSONObject("Owner");
 		if (!iteration.isNullObject()) {
@@ -91,7 +98,6 @@ public class HierarchicalRequirement extends Entity {
 		return result;
 	}
 
-	//add
 	public String getTaskRemainingTotal(){
 		return check("TaskRemainingTotal") ? jsonObject.getString("TaskRemainingTotal") : null;
 	}
@@ -107,6 +113,7 @@ public class HierarchicalRequirement extends Entity {
 	public String getRevisionHistoryRef(){
 		return check("RevisionHistory") ? jsonObject.getJSONObject("RevisionHistory").getString("_ref") : null;
 	}
+	
 	public String getRevisionHistoryUUID() {
 		JSONObject iteration = this.jsonObject.getJSONObject("RevisionHistory");
 		if (!iteration.isNullObject()) {
@@ -114,4 +121,13 @@ public class HierarchicalRequirement extends Entity {
 		}
 		return null;
 	}
+	
+	public int getChildrenCount(){
+		JSONObject tasks = this.jsonObject.getJSONObject("Children");
+		if(!tasks.isNullObject()){
+			return tasks.getInt("Count");
+		}
+		return 0;
+	}
+	
 }

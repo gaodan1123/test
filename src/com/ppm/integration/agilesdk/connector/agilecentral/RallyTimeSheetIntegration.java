@@ -1,4 +1,4 @@
-package com.hp.ppm.integration.rally;
+package com.ppm.integration.agilesdk.connector.agilecentral;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -19,28 +19,32 @@ import net.sf.json.JSONObject;
 import org.apache.log4j.Logger;
 
 import com.hp.ppm.integration.ValueSet;
-import com.hp.ppm.integration.rally.model.HierarchicalRequirement;
-import com.hp.ppm.integration.rally.model.Iteration;
-import com.hp.ppm.integration.rally.model.Project;
-import com.hp.ppm.integration.rally.model.Revision;
-import com.hp.ppm.integration.rally.model.RevisionHistory;
-import com.hp.ppm.integration.rally.model.Subscription;
-import com.hp.ppm.integration.rally.model.TimesheetItem;
-import com.hp.ppm.integration.rally.model.Workspace;
+import com.ppm.integration.agilesdk.connector.agilecentral.Config;
+import com.ppm.integration.agilesdk.connector.agilecentral.Constants;
+import com.ppm.integration.agilesdk.connector.agilecentral.RallyClient;
+import com.ppm.integration.agilesdk.connector.agilecentral.model.HierarchicalRequirement;
+import com.ppm.integration.agilesdk.connector.agilecentral.model.Iteration;
+import com.ppm.integration.agilesdk.connector.agilecentral.model.Project;
+import com.ppm.integration.agilesdk.connector.agilecentral.model.Revision;
+import com.ppm.integration.agilesdk.connector.agilecentral.model.RevisionHistory;
+import com.ppm.integration.agilesdk.connector.agilecentral.model.Subscription;
+import com.ppm.integration.agilesdk.connector.agilecentral.model.Workspace;
 import com.hp.ppm.integration.tm.ExternalWorkItemActualEfforts;
 import com.hp.ppm.integration.tm.IExternalWorkItem;
 import com.hp.ppm.integration.tm.TimeSheetIntegration;
 import com.hp.ppm.integration.tm.TimeSheetIntegrationContext;
+import com.hp.ppm.integration.ui.CheckBox;
+import com.hp.ppm.integration.ui.DynamicalDropdown;
 import com.hp.ppm.integration.ui.Field;
+import com.hp.ppm.integration.ui.LineBreaker;
 import com.hp.ppm.integration.ui.PasswordText;
 import com.hp.ppm.integration.ui.PlainText;
+import com.hp.ppm.integration.ui.DynamicalDropdown.Option;
 import com.hp.ppm.tm.model.TimeSheet;
-
 public class RallyTimeSheetIntegration  implements TimeSheetIntegration{
 	private final Logger logger = Logger.getLogger(this.getClass());
 
 	private static final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-	//thread safe
 	protected synchronized String convertDate(Date date){
 		try {
 			return dateFormat.format(date);
@@ -56,6 +60,87 @@ public class RallyTimeSheetIntegration  implements TimeSheetIntegration{
 		return Arrays.asList(new Field[]{
 				new PlainText(Constants.KEY_USERNAME,"USERNAME","dan.gao3@hpe.com",true),
 				new PasswordText(Constants.KEY_PASSWORD,"PASSWORD","Hanyan@223",true)
+				,new DynamicalDropdown(Constants.KEY_SUBSCRIPTION, "SUBSCRIPTION", true){
+
+					@Override
+					public List<String> getDependencies() {
+						return Arrays.asList(new String[]{Constants.KEY_USERNAME, Constants.KEY_PASSWORD});
+					}
+
+					@Override
+					public List<Option> getDynamicalOptions(ValueSet values) {
+						Config config = new Config();
+						config.setProxy(values.get(Constants.KEY_PROXY_HOST), values.get(Constants.KEY_PROXY_PORT));
+						config.setBasicAuthorization(values.get(Constants.KEY_USERNAME),values.get(Constants.KEY_PASSWORD));
+						RallyClient rallyClient = new RallyClient(values.get(Constants.KEY_BASE_URL),config);
+
+						Subscription subscription = rallyClient.getSubscription();
+						return Arrays.asList(new Option[]{ new Option(subscription.getId(),subscription.getName()) });
+					}
+				}
+				,new DynamicalDropdown(Constants.KEY_WORKSPACE, "WORKSPACE", false){
+
+					@Override
+					public List<String> getDependencies() {
+						return Arrays.asList(new String[]{Constants.KEY_SUBSCRIPTION});
+					}
+
+					@Override
+					public List<Option> getDynamicalOptions(ValueSet values) {
+						Config config = new Config();
+						config.setProxy(values.get(Constants.KEY_PROXY_HOST), values.get(Constants.KEY_PROXY_PORT));
+						config.setBasicAuthorization(values.get(Constants.KEY_USERNAME),values.get(Constants.KEY_PASSWORD));
+						RallyClient rallyClient = new RallyClient(values.get(Constants.KEY_BASE_URL),config);
+
+						List<Option> options = new LinkedList<Option>();
+						
+						for(Workspace w : rallyClient.getWorkspaces(values.get(Constants.KEY_SUBSCRIPTION))){
+							options.add(new Option(w.getId(),w.getName()));
+						}
+
+						return options;
+					}
+				}				
+				,new DynamicalDropdown(Constants.KEY_PROJECT, "PROJECT", false){
+
+					@Override
+					public List<String> getDependencies() {
+						return Arrays.asList(new String[]{Constants.KEY_WORKSPACE});
+					}
+
+					@Override
+					public List<Option> getDynamicalOptions(ValueSet values) {
+						Config config = new Config();
+						config.setProxy(values.get(Constants.KEY_PROXY_HOST), values.get(Constants.KEY_PROXY_PORT));
+						config.setBasicAuthorization(values.get(Constants.KEY_USERNAME),values.get(Constants.KEY_PASSWORD));
+						RallyClient rallyClient = new RallyClient(values.get(Constants.KEY_BASE_URL),config);
+
+						List<Option> options = new LinkedList<Option>();
+						for(Project p : rallyClient.getProjects(values.get(Constants.KEY_WORKSPACE))){
+							options.add(new Option(p.getId(),p.getName()));
+						}
+
+						return options;
+					}
+				}
+				,new DynamicalDropdown(Constants.KEY_DATA_DETAIL_LEVEL, "DATA_DETAIL_LEVEL", true){
+					
+					@Override
+					public List<String> getDependencies(){
+						return Arrays.asList(new String[]{});
+					}
+					
+					@Override
+					public List<Option> getDynamicalOptions(ValueSet values) {
+						List<Option> options = new LinkedList<Option>();	
+						options.add(new Option("0", "Iteration"));
+						options.add(new Option("1", "User story"));
+						return options;
+					}
+				}
+				,new LineBreaker()
+				,new CheckBox(Constants.KEY_REMOVE_ITEMS,"IS_REMOVE_ITEMS_WITHOUT_TIMELOG","block",false)
+				,new LineBreaker()
 		});
 	}
 	
@@ -80,31 +165,65 @@ public class RallyTimeSheetIntegration  implements TimeSheetIntegration{
 
 		final Date startDate = timeSheet.getPeriodStartDate().toGregorianCalendar().getTime();
 		final Date endDate = timeSheet.getPeriodEndDate().toGregorianCalendar().getTime();
-
+		
+		System.out.println("items--"+values.get(Constants.KEY_REMOVE_ITEMS).toString());
 		for(final Workspace workspace : workspaces){
-
+			if(!values.get(Constants.KEY_WORKSPACE).isEmpty() && !workspace.getId().equals(values.get(Constants.KEY_WORKSPACE))){
+				continue;
+			}
+			
 			List<Project> projects = rallyClient.getProjects(workspace.getId());
-			for(final Project project : projects){
-
-				List<Iteration> iterations = rallyClient.getIterations(project.getId());
-				for(final Iteration iteration : iterations){	
-					
-					List<Revision> revisions = new ArrayList<Revision>();
-					List<HierarchicalRequirement> hierarchicalRequirements = iteration.getHierarchicalRequirement();
+			for(final Project project : projects){	
+				if(!values.get(Constants.KEY_PROJECT).isEmpty() && !project.getId().equals(values.get(Constants.KEY_PROJECT))){
+					continue;
+				}
+				
+				if(values.get(Constants.KEY_DATA_DETAIL_LEVEL).equals("1")){
+					List<HierarchicalRequirement> hierarchicalRequirements = rallyClient.getHierarchicalRequirements();
 					for(HierarchicalRequirement hierarchicalRequirement : hierarchicalRequirements){
+						if(!hierarchicalRequirement.getProjectUUID().equals(project.getUUID())){
+							continue;
+						}
+						if(hierarchicalRequirement.getChildrenCount() != 0){
+							continue;
+						}
 						RevisionHistory revisionHistory = rallyClient.getRevisionHistory(hierarchicalRequirement.getRevisionHistoryRef());
 						List<Revision> revision = rallyClient.getRevisions(revisionHistory.getId());
-						revisions.addAll(revision);							
+						HashMap<String, String> hms = getTimeSheetData(startDate, endDate, revision);
+						if(values.get(Constants.KEY_REMOVE_ITEMS).equals("true") && hms.size() == 0){
+							continue;
+						}
+						items.add(new RallyExternalWorkItem(subscription.getName(), workspace.getName(), project.getName(), 
+								hierarchicalRequirement.getName(),
+								hms,
+								values,
+								startDate,
+								endDate));
+					}					
+				}else{	
+					List<Iteration> iterations = rallyClient.getIterations(project.getId());
+					for(final Iteration iteration : iterations){
+						List<HierarchicalRequirement> hierarchicalRequirements = iteration.getHierarchicalRequirement();
+						List<Revision> revisions = new ArrayList<Revision>();
+						for(HierarchicalRequirement hierarchicalRequirement : hierarchicalRequirements){
+							RevisionHistory revisionHistory = rallyClient.getRevisionHistory(hierarchicalRequirement.getRevisionHistoryRef());
+							List<Revision> revision = rallyClient.getRevisions(revisionHistory.getId());
+							revisions.addAll(revision);							
+						}
+						HashMap<String, String> hms = getTimeSheetData(startDate, endDate, revisions);
+						if(values.get(Constants.KEY_REMOVE_ITEMS).equals("true") && hms.size() == 0){
+							continue;
+						}
+						items.add(new RallyExternalWorkItem(subscription.getName(), workspace.getName(), project.getName(), 
+								iteration.getName(),
+								hms,
+								values,
+								startDate,
+								endDate));
 					}
-					HashMap<String, String> hms = getTimeSheetData(startDate, endDate, revisions);
-					items.add(new RallyExternalWorkItem(subscription.getName(), workspace.getName(), project.getName(), 
-							iteration.getName(),
-							hms,
-							values,
-							startDate,
-							endDate));
-				}
+				}				
 			}
+			
 		}	
 		return items;
 	}
@@ -137,7 +256,6 @@ public class RallyTimeSheetIntegration  implements TimeSheetIntegration{
 			this.startDate = startDate;
 			this.endDate = endDate;
 			
-//			this.totalEffort = 0;	
 			effortList.putAll(hms);
 		}
 		
@@ -197,7 +315,6 @@ public class RallyTimeSheetIntegration  implements TimeSheetIntegration{
 
 			Calendar end = new GregorianCalendar();
 			end.setTime(endDate);
-			//move to last millsecond
 			end.set(Calendar.HOUR_OF_DAY,23);
 			end.set(Calendar.MINUTE,59);
 			end.set(Calendar.SECOND,59);
@@ -219,13 +336,11 @@ public class RallyTimeSheetIntegration  implements TimeSheetIntegration{
 		Pattern pattern = Pattern.compile("\\d+(\\.\\d+)?");
 		
 		for(Revision revision : revisions){			
-			//date
 			Date revisionDate = revision.getCreationDate();
 			if(revisionDate.getTime() <= startDate.getTime() || revisionDate.getTime() >= endStart.getTime()){
 				continue;
 			}
 			String date = convertDate(revisionDate);
-			//done hours
 			double remainingHours = 0;
 			if(revision.getDescription().contains("TASK REMAINING TOTAL")){
 				List<String> remainingHoursBuffer = new ArrayList<String>(2);
@@ -243,20 +358,16 @@ public class RallyTimeSheetIntegration  implements TimeSheetIntegration{
 						continue;
 					}								
 				}
-			}
-			
+			}			
 			if(remainingHours > 0){
-				//add
 				if(!hms.containsKey(date)){
 					hms.put(date, remainingHours + "");
 				}else{
-					//sum
 					double remainingHoursSum = Double.parseDouble(hms.get(date)) + remainingHours;
 					hms.put(date, remainingHoursSum + "");
 				}
 			}
-		}
-		
+		}		
 		return hms;	
 	}
 }
