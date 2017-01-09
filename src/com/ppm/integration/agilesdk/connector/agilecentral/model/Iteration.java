@@ -7,8 +7,6 @@ import java.util.List;
 import net.sf.json.JSONObject;
 
 import com.hp.ppm.integration.pm.IExternalTask;
-import com.ppm.integration.agilesdk.connector.agilecentral.model.Entity;
-import com.ppm.integration.agilesdk.connector.agilecentral.model.HierarchicalRequirement;
 
 public class Iteration extends Entity {
 
@@ -58,18 +56,6 @@ public class Iteration extends Entity {
 	@Override
 	public List<IExternalTask> getChildren() {
 		return hierarchicalRequirements;		
-	}
-
-	public String getTaskRemainingTotal(){
-		return check("TaskRemainingTotal") ? jsonObject.getString("TaskRemainingTotal") : null;
-	}
-
-	public String getTaskEstimateTotal() {
-		return check("TaskEstimateTotal") ? jsonObject.getString("TaskEstimateTotal") : null;
-	}
-	
-	public String getTaskActualTotal(){
-		return check("TaskActualTotal") ? jsonObject.getString("TaskActualTotal") : null;
 	}
 	
 	public List<HierarchicalRequirement> getHierarchicalRequirement(){

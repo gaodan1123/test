@@ -6,8 +6,6 @@ import net.sf.json.JSONObject;
 import org.apache.wink.client.Resource;
 import org.apache.wink.client.RestClient;
 
-import com.ppm.integration.agilesdk.connector.agilecentral.Config;
-
 public class RestHelper {
 
 	private Resource resource;
@@ -64,7 +62,6 @@ public class RestHelper {
 
 	private JSONObject get() {
 		String json = this.resource.get(String.class);
-//		System.out.println("GET JSON : " + json);
 		return JSONObject.fromObject(json);
 	}
 
