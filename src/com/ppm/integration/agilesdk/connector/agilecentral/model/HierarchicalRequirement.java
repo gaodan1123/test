@@ -1,18 +1,11 @@
 package com.ppm.integration.agilesdk.connector.agilecentral.model;
 
 import java.util.Date;
- 
-
-
 
 import net.sf.json.JSONObject;
 
 import com.hp.ppm.integration.pm.IExternalTask;
-import com.hp.ppm.integration.pm.IExternalTask.TaskStatus;
 import com.hp.ppm.integration.provider.UserProvider;
-import com.ppm.integration.agilesdk.connector.agilecentral.model.Entity;
-import com.ppm.integration.agilesdk.connector.agilecentral.model.Iteration;
-import com.ppm.integration.agilesdk.connector.agilecentral.model.User;
 public class HierarchicalRequirement extends Entity {
 
 	private Iteration iteration;
@@ -96,30 +89,6 @@ public class HierarchicalRequirement extends Entity {
 			break;
 		}
 		return result;
-	}
-
-	public String getTaskRemainingTotal(){
-		return check("TaskRemainingTotal") ? jsonObject.getString("TaskRemainingTotal") : null;
-	}
-
-	public String getTaskEstimateTotal() {
-		return check("TaskEstimateTotal") ? jsonObject.getString("TaskEstimateTotal") : null;
-	}
-	
-	public String getTaskActualTotal(){
-		return check("TaskActualTotal") ? jsonObject.getString("TaskActualTotal") : null;
-	}
-	
-	public String getRevisionHistoryRef(){
-		return check("RevisionHistory") ? jsonObject.getJSONObject("RevisionHistory").getString("_ref") : null;
-	}
-	
-	public String getRevisionHistoryUUID() {
-		JSONObject iteration = this.jsonObject.getJSONObject("RevisionHistory");
-		if (!iteration.isNullObject()) {
-			return iteration.getString("_refObjectUUID");
-		}
-		return null;
 	}
 	
 	public int getChildrenCount(){

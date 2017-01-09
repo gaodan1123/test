@@ -2,6 +2,7 @@ package com.ppm.integration.agilesdk.connector.agilecentral;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 import net.sf.json.JSONArray;
@@ -9,16 +10,14 @@ import net.sf.json.JSONObject;
 
 import com.hp.ppm.integration.provider.Providers;
 import com.hp.ppm.integration.provider.UserProvider;
-import com.ppm.integration.agilesdk.connector.agilecentral.Config;
-import com.ppm.integration.agilesdk.connector.agilecentral.RallyIntegrationConnector;
-import com.ppm.integration.agilesdk.connector.agilecentral.RestHelper;
 import com.ppm.integration.agilesdk.connector.agilecentral.model.HierarchicalRequirement;
 import com.ppm.integration.agilesdk.connector.agilecentral.model.Iteration;
 import com.ppm.integration.agilesdk.connector.agilecentral.model.Project;
 import com.ppm.integration.agilesdk.connector.agilecentral.model.Release;
-import com.ppm.integration.agilesdk.connector.agilecentral.model.Revision;
-import com.ppm.integration.agilesdk.connector.agilecentral.model.RevisionHistory;
 import com.ppm.integration.agilesdk.connector.agilecentral.model.Subscription;
+import com.ppm.integration.agilesdk.connector.agilecentral.model.Task;
+import com.ppm.integration.agilesdk.connector.agilecentral.model.TimeEntryItem;
+import com.ppm.integration.agilesdk.connector.agilecentral.model.TimeEntryValue;
 import com.ppm.integration.agilesdk.connector.agilecentral.model.User;
 import com.ppm.integration.agilesdk.connector.agilecentral.model.Workspace;
 
@@ -158,24 +157,47 @@ public class RallyClient {
 		return iterations;
 	}
 
-	public RevisionHistory getRevisionHistory(String getRevisionHistoryRef) {
-		int len = getRevisionHistoryRef.split("/").length;
-		String revisionHistoryURI = "/slm/webservice/v2.0/revisionhistory/?";
-		revisionHistoryURI = revisionHistoryURI.replace("?", getRevisionHistoryRef.split("/")[len - 1]);
-		JSONObject historyObject = helper.get(revisionHistoryURI).getJSONObject("RevisionHistory");
-		RevisionHistory revisionHistory = new RevisionHistory(historyObject);
-		return revisionHistory;
-	}
-	
-	public List<Revision> getRevisions(String getRevisionHistoryId) {
-		String revisionhistoryURI = "/slm/webservice/v2.0/revisionhistory/?/revisions";
-		revisionhistoryURI = revisionhistoryURI.replace("?", getRevisionHistoryId);
-		JSONArray jsonArray = helper.getAll(revisionhistoryURI);
-		List<Revision> revisions = new ArrayList<Revision>(jsonArray.size());
-		for (int i = 0; i < jsonArray.size(); i++) {
-			revisions.add(new Revision(jsonArray.getJSONObject(i)));
-		}
-		return revisions;
-	}
+    public List<Task> getTasks(String hierarchicalRequirementId) {
+        String tasksURI = "/slm/webservice/v2.0/hierarchicalRequirement/?/tasks";
+        tasksURI = tasksURI.replace("?", hierarchicalRequirementId);
+        JSONArray jsonArray = helper.getAll(tasksURI);
+        List<Task> tasks = new ArrayList<Task>(jsonArray.size());
+        for (int i = 0; i < jsonArray.size(); i++) {
+            tasks.add(new Task(jsonArray.getJSONObject(i)));
+        }
+        return tasks;
+    }
+
+    public HashMap<String, List<TimeEntryItem>> getTimeEntryItem() {
+        HashMap<String, List<TimeEntryItem>> hms = new HashMap<>();
+        String timeEntryItemURI = "/slm/webservice/v2.0/timeentryitem";
+        JSONArray jsonArray = helper.query(timeEntryItemURI, "", true, "", 1, 20);
+        for (int i = 0; i < jsonArray.size(); i++) {
+            TimeEntryItem item = new TimeEntryItem(jsonArray.getJSONObject(i));
+            if (hms.containsKey(item.getTaskUUID())) {
+                List<TimeEntryItem> items = hms.get(item.getTaskUUID());
+                items.add(item);
+                String taskUUID = item.getTaskUUID();
+                hms.put(taskUUID, items);
+            } else {
+                List<TimeEntryItem> items = new ArrayList<>();
+                items.add(item);
+                String taskUUID = item.getTaskUUID();
+                hms.put(taskUUID, items);
+            }
+        }
+        return hms;
+    }
+
+    public List<TimeEntryValue> getTimeEntryValue(String timeEntryItemId) {
+        String timeEntryValueURI = "/slm/webservice/v2.0/timeentryitem/?/values";
+        timeEntryValueURI = timeEntryValueURI.replace("?", timeEntryItemId);
+        JSONArray jsonArray = helper.getAll(timeEntryValueURI);
+        List<TimeEntryValue> timeEntryValues = new ArrayList<TimeEntryValue>();
+        for (int i = 0; i < jsonArray.size(); i++) {
+            timeEntryValues.add(new TimeEntryValue(jsonArray.getJSONObject(i)));
+        }
+        return timeEntryValues;
+    }
 
 }

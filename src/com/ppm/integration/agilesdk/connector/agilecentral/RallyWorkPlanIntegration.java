@@ -10,19 +10,16 @@ import com.hp.ppm.integration.pm.IExternalTask;
 import com.hp.ppm.integration.pm.IExternalWorkPlan;
 import com.hp.ppm.integration.pm.WorkPlanIntegration;
 import com.hp.ppm.integration.pm.WorkPlanIntegrationContext;
-import com.ppm.integration.agilesdk.connector.agilecentral.Config;
-import com.ppm.integration.agilesdk.connector.agilecentral.Constants;
-import com.ppm.integration.agilesdk.connector.agilecentral.RallyClient;
-import com.ppm.integration.agilesdk.connector.agilecentral.model.Iteration;
-import com.ppm.integration.agilesdk.connector.agilecentral.model.Project;
-import com.ppm.integration.agilesdk.connector.agilecentral.model.Release;
-import com.ppm.integration.agilesdk.connector.agilecentral.model.Subscription;
-import com.ppm.integration.agilesdk.connector.agilecentral.model.Workspace;
 import com.hp.ppm.integration.ui.DynamicalDropdown;
 import com.hp.ppm.integration.ui.Field;
 import com.hp.ppm.integration.ui.LineBreaker;
 import com.hp.ppm.integration.ui.PasswordText;
 import com.hp.ppm.integration.ui.PlainText;
+import com.ppm.integration.agilesdk.connector.agilecentral.model.Iteration;
+import com.ppm.integration.agilesdk.connector.agilecentral.model.Project;
+import com.ppm.integration.agilesdk.connector.agilecentral.model.Release;
+import com.ppm.integration.agilesdk.connector.agilecentral.model.Subscription;
+import com.ppm.integration.agilesdk.connector.agilecentral.model.Workspace;
 
 public class RallyWorkPlanIntegration implements WorkPlanIntegration {
 	String strTemp="yyyy-MM-dd HH:mm:ss";
@@ -133,7 +130,6 @@ public class RallyWorkPlanIntegration implements WorkPlanIntegration {
 		final RallyClient rallyClient = new RallyClient(values.get(Constants.KEY_BASE_URL),config);
 
 		final String projectId = values.get(Constants.KEY_PROJECT);
-		//add
 		final String releaseId = values.get(Constants.KEY_RELEASE);
 		
 		IExternalWorkPlan externalWorkPlan = new IExternalWorkPlan(){
