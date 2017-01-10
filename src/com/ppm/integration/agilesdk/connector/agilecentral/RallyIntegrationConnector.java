@@ -13,7 +13,7 @@ public class RallyIntegrationConnector implements IntegrationConnector {
 
 	@Override
 	public String getTargetApplication() {
-        return "Agile Central Connector";
+        return "CA Agile Central (Rally)";
 	}
 
 	@Override
