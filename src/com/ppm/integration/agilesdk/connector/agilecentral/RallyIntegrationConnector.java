@@ -6,9 +6,6 @@ import java.util.List;
 import com.hp.ppm.integration.FunctionIntegration;
 import com.hp.ppm.integration.IntegrationConnector;
 import com.hp.ppm.integration.IntegrationConnectorInstance;
-import com.ppm.integration.agilesdk.connector.agilecentral.Constants;
-import com.ppm.integration.agilesdk.connector.agilecentral.RallyTimeSheetIntegration;
-import com.ppm.integration.agilesdk.connector.agilecentral.RallyWorkPlanIntegration;
 import com.hp.ppm.integration.ui.Field;
 import com.hp.ppm.integration.ui.PlainText;
 
@@ -16,7 +13,7 @@ public class RallyIntegrationConnector implements IntegrationConnector {
 
 	@Override
 	public String getTargetApplication() {
-		return "Rally";
+        return "CA Agile Central (Rally)";
 	}
 
 	@Override
@@ -26,13 +23,13 @@ public class RallyIntegrationConnector implements IntegrationConnector {
 
 	@Override
 	public String getTargetApplicationIcon(){
-		return "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAACSUlEQVQ4jZWTS0hVURSGv3X2Pt6Hgl20B2aiUqmpPUAyiKS0KDJqYEEDqUFh0CSKHAVNCqKJg2YFkQ16EPQYNCsKggIFSwMle2E5ESrqekPPPZ5zdoN9uV6piP7Rfq1/rf9fawsWLqD4NxQQ5tZzQCiA27u2/m7bkZ5V/oM7GD8LIvZJFIEx6O2dsKIKMzRA9HEcN+vT+2qsfzwzc1EDamtNTcPujvaVDDzBGDOfLwiRYycgHofrVzDfv0HZIsTVXHrzoWk8M4MGyBIFBCFzYQgICODNovZ3QyxG0HcOVBFobfVGEaGxUhwA43mgBHGL8qXLsgqcllaC/ss2WDl/NMUS/Jy2esvKIQrB93E2biZ6Nw5fpv4anCfAz8LUFE5DM8z5gEGqazFvx/Jl5xFFEASQ88oSOBoGnyMtm8BxbBfiCchkQHLZjYGsh5Qvgab1UFxSQOBqzOuXIKBat2C8WfCySHEJmAiMzay7j6KPn4L2XcjipQUEOYT3biP7DiClKczEe1hdb8v1PdSeLqioJLhwFvrO2/tCAtEaMzqCGXyBe/IM0dAAzso6JFUGbhGyoYXw5jVMdtbORU7aQntjCcL7tzCTE6hDPZjJT6iDh60nxsB0GtRCU/M7A3aAiuIEN66idu5Ftu1AqmvRUQSeh9O4jvDZY2ugieYJSrWKiVa4oT0kkYRHD2FsBDq7kLYOSMSRxmacVAo+T+AOjmq+phFA1ZUkTy9PxNcYCj9CQc9LUziVVZhkEkQQ35eh4eGnP9Lp/t8m63/xC/QO18wxC1a8AAAAAElFTkSuQmCC";
+        	return "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsQAAA7EAZUrDhsAAAH5SURBVDhPpZO/q/lRGMffvsNFNgbqKhMyIIvBeiVls8iPMlyLlJT8B2SR7sRm8COjyY9SuozqDiRlMShCUUrCjXM/5/j4dGX6dl/1dJ7zPs/zfM55zvmICAf+wEOBfD6PwWAAsVgMl8sFh8OBXq+HRqOB7XYLuVwOv98Po9HIZ3DQAtPplBZ5MpvNRtRq9ZOeTqdpGoPtQCQScfqNYrGI1WqFRCLB5l6vFyaTCVqtFj6fD+fzmelcGhvRbDaFyplMhtZjJJNJEgqFSKVS4RVCotGoEHsHqVRKEDudDi/fmEwmhOuFsP7b7vy7XC7c/Mb39zfvAdVqFXq9HvV6HW63G19fXwiHw/zqL2q1mlA1FovxdQnRaDRMCwQCvELI+/v70w6YdxepBYNBEolEiNlsZnOdTkd2ux1pt9sPcXeYNxwOHxapcd1/0qxWq+DPZjPCHet2jZzAKBQKGI1GUCgU7MpeXl6Qy+XoR+DxeGAwGFAul1ms0+kEvf6/P2XaJNplpVKJxWKBUqmEeDyOfr8Pi8WC5XKJ9XrNdiWTyZj/+voKiUSC+XwOUTabJdxjgkqlYtum/wI1mjwej1kgfX1SqRTcuWG329FqtfD29oZutwscDgfCBdCTkM1mw8Y71+uVGeV0OpGPjw/y+fnJ5sfjkez3+8cm/j/ADyGll4fUyTxIAAAAAElFTkSuQmCC";	
 	}
 
 	@Override
 	public List<Field> getDriverConfigurationFields() {
 		return Arrays.asList(new Field[] {
-			new PlainText(Constants.KEY_BASE_URL, "BASE_URL", "https://rally1.rallydev.com", true),
+            		new PlainText(Constants.KEY_BASE_URL, "BASE_URL", "https://demo-rally.rallydev.com", true),
 			new PlainText(Constants.KEY_PROXY_HOST,"PROXY_HOST","",false),
 			new PlainText(Constants.KEY_PROXY_PORT,"PROXY_PORT","",false)
 		});
