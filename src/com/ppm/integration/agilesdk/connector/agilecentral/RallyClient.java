@@ -198,15 +198,25 @@ public class RallyClient {
         return hms;
     }
 
-    public List<TimeEntryValue> getTimeEntryValue(String timeEntryItemId) {
-        String timeEntryValueURI = "/slm/webservice/v2.0/timeentryitem/?/values";
-        timeEntryValueURI = timeEntryValueURI.replace("?", timeEntryItemId);
-        JSONArray jsonArray = helper.getAll(timeEntryValueURI);
-        List<TimeEntryValue> timeEntryValues = new ArrayList<TimeEntryValue>();
+    public HashMap<String, List<TimeEntryValue>> getTimeEntryValues() {
+        HashMap<String, List<TimeEntryValue>> hms = new HashMap<>();
+        String timeEntryValueURI = "/slm/webservice/v2.0/timeentryvalue";
+        JSONArray jsonArray = helper.query(timeEntryValueURI, "", true, "", 1, 20);
         for (int i = 0; i < jsonArray.size(); i++) {
-            timeEntryValues.add(new TimeEntryValue(jsonArray.getJSONObject(i)));
+            TimeEntryValue value = new TimeEntryValue(jsonArray.getJSONObject(i));
+            if (hms.containsKey(value.getItemUUID())) {
+                List<TimeEntryValue> values = hms.get(value.getItemUUID());
+                values.add(value);
+                String ItemUUID = value.getItemUUID();
+                hms.put(ItemUUID, values);
+            } else {
+                List<TimeEntryValue> values = new ArrayList<>();
+                values.add(value);
+                String ItemUUID = value.getItemUUID();
+                hms.put(ItemUUID, values);
+            }
         }
-        return timeEntryValues;
+        return hms;
     }
 
 }

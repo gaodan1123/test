@@ -167,7 +167,7 @@ public class RallyTimeSheetIntegration extends TimeSheetIntegration {
         final Date endDate = timeSheet.getPeriodEndDate().toGregorianCalendar().getTime();
 
         HashMap<String, List<TimeEntryItem>> timeEntryItemsHM = rallyClient.getTimeEntryItem();
-
+        HashMap<String, List<TimeEntryValue>> timeEntryValuesHM = rallyClient.getTimeEntryValues();
         for (final Workspace workspace : workspaces) {
 
             if (!values.get(Constants.KEY_WORKSPACE).isEmpty()
@@ -200,7 +200,7 @@ public class RallyTimeSheetIntegration extends TimeSheetIntegration {
                                 List<TimeEntryItem> timeEntryItems = timeEntryItemsHM.get(task.getUUID());
                                 for (TimeEntryItem timeEntryItem : timeEntryItems) {
                                     List<TimeEntryValue> thisTimeEntryValues =
-                                            rallyClient.getTimeEntryValue(timeEntryItem.getId());
+                                            timeEntryValuesHM.get(timeEntryItem.getUUID());
                                     timeEntryValues.addAll(thisTimeEntryValues);
                                 }
                             }
@@ -232,7 +232,7 @@ public class RallyTimeSheetIntegration extends TimeSheetIntegration {
                                 List<TimeEntryItem> timeEntryItems = timeEntryItemsHM.get(task.getUUID());
                                 for (TimeEntryItem timeEntryItem : timeEntryItems) {
                                     List<TimeEntryValue> thisTimeEntryValues =
-                                            rallyClient.getTimeEntryValue(timeEntryItem.getId());
+                                            timeEntryValuesHM.get(timeEntryItem.getUUID());
                                     timeEntryValues.addAll(thisTimeEntryValues);
                                 }
                             }
@@ -265,7 +265,7 @@ public class RallyTimeSheetIntegration extends TimeSheetIntegration {
                                     List<TimeEntryItem> timeEntryItems = timeEntryItemsHM.get(task.getUUID());
                                     for (TimeEntryItem timeEntryItem : timeEntryItems) {
                                         List<TimeEntryValue> thisTimeEntryValues =
-                                                rallyClient.getTimeEntryValue(timeEntryItem.getId());
+                                                timeEntryValuesHM.get(timeEntryItem.getUUID());
                                         timeEntryValues.addAll(thisTimeEntryValues);
                                     }
                                 }
