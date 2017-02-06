@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="lib" path="bin/bundle/deploy/941/Connector-AGILECENTRAL/fs_war.jar"/>
-	<classpathentry kind="lib" path="bin/connector-agilecentral-impl.jar"/>
+	<classpathentry kind="lib" path="bin/bundle/deploy/941/Connector-RALLY/fs_war.jar"/>
+	<classpathentry kind="lib" path="bin/connector-rally-impl.jar"/>
 	<classpathentry kind="lib" path="bin/fs_war.jar"/>
-	<classpathentry kind="lib" path="bin/fs_war/WEB-INF/lib/connector-agilecentral-impl.jar"/>
-	<classpathentry kind="lib" path="bin/ppm-941-Connector-AGILECENTRAL.jar"/>
+	<classpathentry kind="lib" path="bin/fs_war/WEB-INF/lib/connector-rally-impl.jar"/>
+	<classpathentry kind="lib" path="bin/ppm-941-Connector-RALLY.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="C:/ppm/SourceCode/java/lib/runtime/acme.jar"/>
 	<classpathentry kind="lib" path="C:/ppm/SourceCode/java/lib/runtime/activation-1.1.jar"/>
@@ -25,7 +25,6 @@
 	<classpathentry kind="lib" path="C:/ppm/SourceCode/java/lib/runtime/asm-attrs.jar"/>
 	<classpathentry kind="lib" path="C:/ppm/SourceCode/java/lib/runtime/aspectjrt.jar"/>
 	<classpathentry kind="lib" path="C:/ppm/SourceCode/java/lib/runtime/aspectjweaver.jar"/>
-	<classpathentry kind="lib" path="C:/ppm/SourceCode/java/lib/runtime/aspose-tasks-9.5.0-jdk16.jar"/>
 	<classpathentry kind="lib" path="C:/ppm/SourceCode/java/lib/runtime/autopassj-common-8.2.1.jar"/>
 	<classpathentry kind="lib" path="C:/ppm/SourceCode/java/lib/runtime/autopassj-core-8.2.1.jar"/>
 	<classpathentry kind="lib" path="C:/ppm/SourceCode/java/lib/runtime/autopassj-crypto-8.2.1.jar"/>
@@ -221,7 +220,6 @@
 	<classpathentry kind="lib" path="C:/ppm/SourceCode/java/lib/runtime/ppm-commonutils.jar"/>
 	<classpathentry kind="lib" path="C:/ppm/SourceCode/java/lib/runtime/ppm-fm-rest.jar"/>
 	<classpathentry kind="lib" path="C:/ppm/SourceCode/java/lib/runtime/ppm-fm-service.jar"/>
-	<classpathentry kind="lib" path="C:/ppm/SourceCode/java/lib/runtime/ppm-integration-spi.jar"/>
 	<classpathentry kind="lib" path="C:/ppm/SourceCode/java/lib/runtime/ppm-model.jar"/>
 	<classpathentry kind="lib" path="C:/ppm/SourceCode/java/lib/runtime/ppm-ooxml-schemas-1.1.jar"/>
 	<classpathentry kind="lib" path="C:/ppm/SourceCode/java/lib/runtime/ppm-pgm-rest.jar"/>
@@ -283,5 +281,7 @@
 	<classpathentry kind="lib" path="C:/ppm/SourceCode/java/lib/runtime/wink/json-20080701.jar"/>
 	<classpathentry kind="lib" path="C:/ppm/SourceCode/java/lib/runtime/wink/wink-1.2.0-incubating.jar"/>
 	<classpathentry kind="lib" path="C:/ppm/SourceCode/java/lib/runtime/wink/wink-json-provider-1.2.0-incubating.jar"/>
+	<classpathentry kind="lib" path="C:/ppm/SourceCode/java/lib/runtime/ppm-integration-spi.jar"/>
+	<classpathentry kind="lib" path="C:/ppm/SourceCode/java/lib/runtime/aspose-tasks-16.11.2-jdk16.jar"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>

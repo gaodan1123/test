@@ -19,7 +19,8 @@ public class Constants {
 	
 	public static final String KEY_DATA_DETAIL_LEVEL = "dataDetailLevel";
     public static final String KEY_DATA_DETAIL_LEVEL_ITERATION = "Iteration";
-    public static final String KEY_DATA_DETAIL_LEVEL_USERSTORY = "UserStory";
+
+    public static final String KEY_DATA_DETAIL_LEVEL_USERSTORY = "WorkItem";
     public static final String KEY_DATA_DETAIL_LEVEL_TASK = "Task";
 	public static final String KEY_REMOVE_ITEMS = "remove items";
 }
