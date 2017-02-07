@@ -18,6 +18,7 @@ import org.apache.log4j.Logger;
 import com.hp.ppm.tm.model.TimeSheet;
 import com.ppm.integration.agilesdk.ValueSet;
 import com.ppm.integration.agilesdk.connector.agilecentral.model.Backlog;
+import com.ppm.integration.agilesdk.connector.agilecentral.model.Defect;
 import com.ppm.integration.agilesdk.connector.agilecentral.model.HierarchicalRequirement;
 import com.ppm.integration.agilesdk.connector.agilecentral.model.Iteration;
 import com.ppm.integration.agilesdk.connector.agilecentral.model.Project;
@@ -166,8 +167,10 @@ public class RallyTimeSheetIntegration extends TimeSheetIntegration {
         final Date endDate = timeSheet.getPeriodEndDate().toGregorianCalendar().getTime();
 
         HashMap<String, List<TimeEntryItem>> timeEntryItemsHM = rallyClient.getTimeEntryItem();
+        HashMap<String, List<TimeEntryValue>> timeEntryvaluesHM = rallyClient.getTimeEntryValue();
         HashMap<String, List<HierarchicalRequirement>> hierarchicalRequirementHM =
                 rallyClient.getHierarchicalRequirement();
+        HashMap<String, List<Defect>> defectHM = rallyClient.getDefect();
         for (final Workspace workspace : workspaces) {
 
             if (!values.get(Constants.KEY_WORKSPACE).isEmpty()
@@ -189,7 +192,9 @@ public class RallyTimeSheetIntegration extends TimeSheetIntegration {
                     List<Backlog> backlogs = new ArrayList<>();
                     backlogs.addAll(rallyClient.getHierarchicalRequirements());
                     backlogs.addAll(rallyClient.getDefects());
+
                     for (Backlog backlog : backlogs) {
+
                         if (backlog.getType().equals("Defect")) {
                             tag = "DE";
                         } else {
@@ -201,12 +206,16 @@ public class RallyTimeSheetIntegration extends TimeSheetIntegration {
                         }
 
                         List<TimeEntryValue> timeEntryValues = new ArrayList<>();
-                        if (timeEntryItemsHM.containsKey(backlog.getUUID())) {
-                            List<TimeEntryItem> timeEntryItems = timeEntryItemsHM.get(backlog.getUUID());
+                        String backlogUUID = backlog.getUUID();
+                        if (timeEntryItemsHM.containsKey(backlogUUID)) {
+                            List<TimeEntryItem> timeEntryItems = timeEntryItemsHM.get(backlogUUID);
+                            String timeEntryItemUUID = "";
                             for (TimeEntryItem timeEntryItem : timeEntryItems) {
-                                List<TimeEntryValue> thisTimeEntryValues =
-                                        rallyClient.getTimeEntryValue(timeEntryItem.getId());
-                                timeEntryValues.addAll(thisTimeEntryValues);
+                                timeEntryItemUUID = timeEntryItem.getUUID();
+                                if (timeEntryvaluesHM.containsKey(timeEntryItemUUID)) {
+                                    timeEntryValues.addAll(timeEntryvaluesHM.get(timeEntryItemUUID));
+                                }
+
                             }
                         }
 
@@ -221,25 +230,35 @@ public class RallyTimeSheetIntegration extends TimeSheetIntegration {
                     // iterations
                     List<Iteration> iterations = rallyClient.getIterations(project.getId());
                     for (final Iteration iteration : iterations) {
-                        List<HierarchicalRequirement> hierarchicalRequirements = new ArrayList<>();
-                        if (hierarchicalRequirementHM.containsKey(iteration.getUUID())) {
-                            hierarchicalRequirements = hierarchicalRequirementHM.get(iteration.getUUID());
+
+                        String iterationUUID = iteration.getUUID();
+
+                        List<Backlog> backlogs = new ArrayList<>();
+                        if (hierarchicalRequirementHM.containsKey(iterationUUID)) {
+                            backlogs.addAll(hierarchicalRequirementHM.get(iterationUUID));
+                        }
+                        if (defectHM.containsKey(iterationUUID)) {
+                            backlogs.addAll(defectHM.get(iterationUUID));
                         }
 
                         List<TimeEntryValue> timeEntryValues = new ArrayList<>();
-                        for (HierarchicalRequirement hierarchicalRequirement : hierarchicalRequirements) {
-
-                            if (!hierarchicalRequirement.getProjectUUID().equals(project.getUUID())) {
+                        for (Backlog backlog : backlogs) {
+                           
+                            if (!backlog.getProjectUUID().equals(project.getUUID())) {
                                 continue;
                             }
-
-                            if (timeEntryItemsHM.containsKey(hierarchicalRequirement.getUUID())) {
+                            
+                            String backlogUUID = backlog.getUUID();
+                            if (timeEntryItemsHM.containsKey(backlogUUID)) {
                                 List<TimeEntryItem> timeEntryItems =
-                                        timeEntryItemsHM.get(hierarchicalRequirement.getUUID());
+                                        timeEntryItemsHM.get(backlogUUID);
+                                String timeEntryItemUUID = "";
                                 for (TimeEntryItem timeEntryItem : timeEntryItems) {
-                                    List<TimeEntryValue> thisTimeEntryValues =
-                                            rallyClient.getTimeEntryValue(timeEntryItem.getId());
-                                    timeEntryValues.addAll(thisTimeEntryValues);
+                                    timeEntryItemUUID = timeEntryItem.getUUID();
+                                    if (timeEntryvaluesHM.containsKey(timeEntryItemUUID)) {
+                                        timeEntryValues.addAll(timeEntryvaluesHM.get(timeEntryItemUUID));
+                                    }
+
                                 }
                             }
                         }

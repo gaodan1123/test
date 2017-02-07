@@ -18,4 +18,12 @@ public class TimeEntryValue extends Entity {
         return check("Hours") ? jsonObject.getInt("Hours") : 0;
     }
 
+    public String getTimeEntryItemUUID() {
+        JSONObject iteration = this.jsonObject.getJSONObject("TimeEntryItem");
+        if (!iteration.isNullObject()) {
+            return iteration.getString("_refObjectUUID");
+        }
+        return null;
+    }
+
 }
