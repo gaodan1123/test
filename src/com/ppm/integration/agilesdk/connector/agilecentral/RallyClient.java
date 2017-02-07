@@ -9,6 +9,7 @@ import java.util.List;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
+import com.ppm.integration.agilesdk.connector.agilecentral.model.Defect;
 import com.ppm.integration.agilesdk.connector.agilecentral.model.HierarchicalRequirement;
 import com.ppm.integration.agilesdk.connector.agilecentral.model.Iteration;
 import com.ppm.integration.agilesdk.connector.agilecentral.model.Project;
@@ -233,4 +234,16 @@ public class RallyClient {
         return hms;
     }
 
+    public List<Defect> getDefects() {
+        String defectURI = "/slm/webservice/v2.0/defect";
+        JSONArray jsonArray = helper.query(defectURI, "", true, "", 1, 20);
+        List<Defect> defects = new ArrayList<Defect>();
+
+        UserProvider userProvider = Providers.getUserProvider(RallyIntegrationConnector.class);
+        for (int i = 0; i < jsonArray.size(); i++) {
+
+            defects.add(new Defect(jsonArray.getJSONObject(i), userProvider));
+        }
+        return defects;
+    }
 }

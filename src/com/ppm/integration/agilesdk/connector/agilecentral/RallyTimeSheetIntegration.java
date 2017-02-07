@@ -17,6 +17,7 @@ import org.apache.log4j.Logger;
 
 import com.hp.ppm.tm.model.TimeSheet;
 import com.ppm.integration.agilesdk.ValueSet;
+import com.ppm.integration.agilesdk.connector.agilecentral.model.Backlog;
 import com.ppm.integration.agilesdk.connector.agilecentral.model.HierarchicalRequirement;
 import com.ppm.integration.agilesdk.connector.agilecentral.model.Iteration;
 import com.ppm.integration.agilesdk.connector.agilecentral.model.Project;
@@ -181,22 +182,27 @@ public class RallyTimeSheetIntegration extends TimeSheetIntegration {
                         && !project.getId().equals(values.get(Constants.KEY_PROJECT))) {
                     continue;
                 }
-
+                String tag = "";
                 if (values.get(Constants.KEY_DATA_DETAIL_LEVEL)
-                        .equals(Constants.KEY_DATA_DETAIL_LEVEL_USERSTORY)) {
-                    // user story
-                    String tag = "US";
-                    List<HierarchicalRequirement> hierarchicalRequirements = rallyClient.getHierarchicalRequirements();
-                    for (HierarchicalRequirement hierarchicalRequirement : hierarchicalRequirements) {
+                        .equals(Constants.KEY_DATA_DETAIL_LEVEL_USERSTORY)) {                    
+                    // work_items
+                    List<Backlog> backlogs = new ArrayList<>();
+                    backlogs.addAll(rallyClient.getHierarchicalRequirements());
+                    backlogs.addAll(rallyClient.getDefects());
+                    for (Backlog backlog : backlogs) {
+                        if (backlog.getType().equals("Defect")) {
+                            tag = "DE";
+                        } else {
+                            tag = "US";
+                        }
 
-                        if (!hierarchicalRequirement.getProjectUUID().equals(project.getUUID())) {
+                        if (!backlog.getProjectUUID().equals(project.getUUID())) {
                             continue;
                         }
 
                         List<TimeEntryValue> timeEntryValues = new ArrayList<>();
-                        if (timeEntryItemsHM.containsKey(hierarchicalRequirement.getUUID())) {
-                            List<TimeEntryItem> timeEntryItems =
-                                    timeEntryItemsHM.get(hierarchicalRequirement.getUUID());
+                        if (timeEntryItemsHM.containsKey(backlog.getUUID())) {
+                            List<TimeEntryItem> timeEntryItems = timeEntryItemsHM.get(backlog.getUUID());
                             for (TimeEntryItem timeEntryItem : timeEntryItems) {
                                 List<TimeEntryValue> thisTimeEntryValues =
                                         rallyClient.getTimeEntryValue(timeEntryItem.getId());
@@ -208,12 +214,11 @@ public class RallyTimeSheetIntegration extends TimeSheetIntegration {
                         if (values.get(Constants.KEY_REMOVE_ITEMS).equals("true") && hms.size() == 0) {
                             continue;
                         }
-                        items.add(new RallyExternalWorkItem(tag, project.getName(), hierarchicalRequirement.getName(),
-                                hms, values, startDate, endDate));
+                        items.add(new RallyExternalWorkItem(tag, project.getName(), backlog.getName(), hms, values,
+                                startDate, endDate));
                     }
                 } else {
-                    // iteration
-                    String tag = "";
+                    // iterations
                     List<Iteration> iterations = rallyClient.getIterations(project.getId());
                     for (final Iteration iteration : iterations) {
                         List<HierarchicalRequirement> hierarchicalRequirements = new ArrayList<>();
